@@ -120,9 +120,11 @@ document.body.addEventListener('click', (e) =>{
 
 // Listen for clicks on the keyboard/alphabet written out
 document.body.addEventListener('keypress', (e) =>{
+  console.log(e.key)
   if (e.key === 'Enter') {
     checkWord();
-  } else {
+  } else if (e.target.id.includes('-') && !e.target.id.includes('letter-') ) {
+    e.target.value = e.key;
     return
   }
 });
