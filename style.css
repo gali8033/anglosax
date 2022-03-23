@@ -17,6 +17,16 @@ h1 {
   font-size: 3em;
 }
 
+header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+header img {
+  max-width: 30%;
+}
+
 #wrapper {
   width: 60%;
   margin: 0 auto;
@@ -40,6 +50,20 @@ h1 {
 
 .inputBox:focus {
   background-color: #dfe6e9;
+}
+
+/*Got the placeholder fix from: https://www.w3schools.com/howto/howto_css_placeholder.asp*/
+::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: #E0E0E0;
+  opacity: 1; /* Firefox */
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #E0E0E0;
+}
+
+::-ms-input-placeholder { /* Microsoft Edge */
+  color: #E0E0E0;
 }
 
 .letterBox {

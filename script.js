@@ -30,8 +30,6 @@ function getRandomWord() {
   return words[index];
 }
 
-const correctWord = getRandomWord();
-
 // Input boxes (letter boxes)
 const inputContainer = document.getElementById('inputContainer');
 
@@ -128,7 +126,6 @@ document.body.addEventListener('keypress', (e) =>{
     return
   }
 });
-
 
 let guessBtn = document.getElementById('guessBtn');
 let clearBtn = document.getElementById('clearBtn');
@@ -235,7 +232,7 @@ let map = {
   "row5": {}
 }
 
-function highLightRow(row, guess) {
+function giveLetterHints(row, guess) {
   const correctWordArray = correctWord.split('');
   const guessedWordArray = guess.split('');
 
@@ -286,10 +283,21 @@ function highLightRow(row, guess) {
 
 function toggleRow(row, disabled) {
   for (let letter = 1; letter <= 5; letter++) {
-    let input = document.getElementById(row+'-'+letter).disabled = disabled
+    document.getElementById(row+'-'+letter).disabled = disabled
   }
 }
 
+function highlightRow(row) {
+  let writeArr = ['W','R','I','T','E'];
+  for (let letter = 1; letter <= 5; letter++) {
+    let input = document.getElementById(row+'-'+letter);
+    input.placeholder = writeArr[letter-1];
+  }
+}
+
+
+const correctWord = getRandomWord();
+highlightRow(findRow())
 
 function checkWord() {
   const row = findRow();
@@ -305,14 +313,17 @@ function checkWord() {
         makeAnnouncement('You have gussed the incorrect word', true);
       }
 
-      // Highlight Letters
-      highLightRow(row, guess);
+      // highlight Letters
+      giveLetterHints(row, guess);
 
       // Disable Row
       toggleRow(row, true);
       
       // Enable Next Row
       toggleRow(row+1, false);
+
+      // highlight row
+      highlightRow(row+1);
 
     } else {
       makeAnnouncement('"'+guess+'" doesn\'t exist in our list', true);

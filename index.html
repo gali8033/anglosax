@@ -3,23 +3,34 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Play the famous word game within your browser or smartphone!"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="style.css" />
     <title>Anglosax.se</title>
   </head>
   <body>
-    <div id="wrapper">
-      <h1>Anglosax.se</h1>
-      <div id="inputContainer">
-      </div>
-      <div id="announcementBox"></div>
-      <h2>Letters to use</h2>
-      <div id="alphabetContainer">
-      </div>
-      <div id="buttonsContainer">
-        <button id="guessBtn">Guess</button>
-        <div id="secondaryButtons">
-          <button id="clearBtn">Clear</button>
-          <button id="restartBtn">Restart</button>
+    <div id="app">
+      <header>
+        <img src="./images/logo.png" alt="Logo for anglosax.se" />
+      </header>
+      <div id="wrapper">
+        <div id="inputContainer">
+        </div>
+        <div id="announcementBox"></div>
+        <h2>Letters to use</h2>
+        <div id="alphabetContainer">
+        </div>
+        <div id="buttonsContainer">
+          <button id="guessBtn">Guess</button>
+          <div id="secondaryButtons">
+            <button id="clearBtn">Clear</button>
+            <button id="restartBtn">Restart</button>
+          </div>
         </div>
       </div>
     </div>
