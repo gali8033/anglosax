@@ -2,14 +2,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;700&family=Playfair+Display:wght@400;700&display=swap');
 
 * {
-  font-family: 'Playfair Display', 'Open Sans', sans-serif;
+  font-family: 'Open Sans', sans-serif;
+  box-sizing: border-box;
 }
 
 html,
 body {
+  height: 100%;
   padding: 0;
   margin: 0;
-  background-color: #ecf0f1;
+  background-color: #000000;
   box-sizing: border-box;
 }
 
@@ -19,6 +21,15 @@ h1 {
 
 header {
   display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 2% 5%;
+}
+
+header a {
+  display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }
@@ -27,34 +38,83 @@ header img {
   max-width: 30%;
 }
 
-#wrapper {
-  width: 60%;
-  margin: 0 auto;
+header nav {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  color: #ffffff;
 }
 
-.inputBox {
-  width: 18%;
-  padding-bottom: 18%;
-  text-align: center;
-  font-size: 5em;
-  text-transform: capitalize;
+header nav select {
+  padding: 10px 5px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.8em;
   border-radius: 5px;
-  background-color: #f5f6fa;
+  border: none;
+  cursor: pointer;
   transition: 0.2s ease-in-out;
-  border: 1px solid #bdc3c7;
-  padding: 0;
-  margin: 0;
-  margin-bottom: 1%;
+  color: #000000;
   outline: none;
 }
 
+#app {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#wrapper {
+  flex: 2;
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+#cookiesPrompt {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  background-color: rgba(255,255,255,0.7);
+  padding: 10px;
+}
+
+.inputBox {
+  width: 75px;
+  height: 75px;
+  text-align: center;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  font-size: 2.5em;
+  color: white;
+  text-transform: capitalize;
+  /*background-color: #f5f6fa;*/
+  transition: 0.2s ease-in-out;
+  /*border: 1px solid #bdc3c7;*/
+  border: 2px solid #888888;
+  padding: 0;
+  margin: 0;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  outline: none;
+  background-color: transparent;
+
+}
+
 .inputBox:focus {
-  background-color: #dfe6e9;
+  /*background-color: #dfe6e9;*/
+  background-color: #222222;
 }
 
 /*Got the placeholder fix from: https://www.w3schools.com/howto/howto_css_placeholder.asp*/
 ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
-  color: #E0E0E0;
+  color: #555555;
   opacity: 1; /* Firefox */
 }
 
@@ -66,16 +126,16 @@ header img {
   color: #E0E0E0;
 }
 
-.letterBox {
-  min-width: 10%;
-  padding: 2%;
-  font-size: 40px;
+.primaryBtn {
+  margin-top: 10px;
+  padding: 10px 5px;
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
+  font-size: 0.8em;
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  background-color: #b2bec3;
-  margin-right: 5px;
-  margin-bottom: 5px;
+  background-color: #aaaaaa;
   border-radius: 5px;
   border: none;
   cursor: pointer;
@@ -83,146 +143,64 @@ header img {
   color: #000000;
 }
 
-.letterBox:hover {
-  background-color: darkgrey;
+.primaryBtn:hover {
+  background-color: #999999;
+}
+
+.letterBox,
+.letterBoxFunction {
+  margin-right: 5px;
+}
+
+.letterBox,
+.letterBoxFunction {
+  width: 30px;
+  height: 50px;
+  padding: 20px;
+  font-size: 1.5em;
+}
+
+.letterBoxFunction {
+  width: 100px;
 }
 
 #inputContainer {
-  padding: 2%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  border-radius: 5px;
+  text-align: center;
 }
 
 #alphabetContainer {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  text-align: center;
+  margin-bottom: 10%;
 }
 
 #announcementBox {
-  margin: 5% 0;
+  margin: 2% 0;
   display: none;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 5px;
   font-size: 1.2em;
 }
 
-#buttonsContainer {
-  margin: 5% 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-}
-
-#guessBtn {
-  width: 200px;
-  height: 50px;
-  background-color: #3498db;
-  border: none;
-  border-radius: 5px;
-  font-size: 1.5em;
-  color: #FFFFFF;
-  box-shadow: 0px 5px 2px #2980b9;
-  transition: 0.1s ease-in-out;
-  cursor: pointer;
-}
-
-#guessBtn:hover {
-  background-color: #2e8ece;
-}
-
-#guessBtn:active {
-  box-shadow: 0px 2px 2px #2980b9;
-}
-
-#clearBtn {
-  width: 100px;
-  height: 40px;
-  background-color: #ff7675;
-  border: none;
-  border-radius: 5px;
-  color: #FFFFFF;
-  box-shadow: 0px 5px 2px #d63031;
-  transition: 0.1s ease-in-out;
-  cursor: pointer;
-}
-
-#clearBtn:hover {
-  background-color: #ff5d5c;
-}
-
-#clearBtn:active {
-  box-shadow: 0px 2px 2px #d63031;
-}
-
-#restartBtn {
-  width: 100px;
-  height: 40px;
-  background-color: #a4b0be;
-  border: none;
-  border-radius: 5px;
-  color: #FFFFFF;
-  box-shadow: 0px 5px 2px #747d8c;
-  transition: 0.1s ease-in-out;
-  cursor: pointer;
-}
-
-#restartBtn:hover {
-  background-color: #95a3b3;
-}
-
-#restartBtn:active {
-  box-shadow: 0px 2px 2px #747d8c;
-}
-
-
 @media only screen and (max-width: 700px) {
-  #wrapper {
-    width: 90%;
+  header img {
+    max-width: 50%;
   }
-
-  #buttonsContainer {
-    flex-direction: column;
-  }
-
-  #secondaryButtons {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-  }
-
-  #guessBtn {
-    width: 100%;
-    font-size: 1.2em;
-    margin-bottom: 2%;
-  }
-
-  #clearBtn {
-    width: 100%;
-    margin-bottom: 2%;
-  }
-
-  #restartBtn {
-    width: 100%;
-  }
-
 
   .inputBox {
-    font-size: 2em;
+    width: 60px;
+    height: 60px;
+    font-size: 1em;
   }
 
-  .letterBox {
-    font-size: 2em;
+  .letterBox,
+  .letterBoxFunction {
+    padding: 10px;
+    font-size: 1em;
   }
-}
 
-@media only screen and (min-width: 2000px) {
-  #wrapper {
-    width: 40%;
+  .letterBoxFunction {
+    width: 70px;
+    font-size: ;
   }
 }
 

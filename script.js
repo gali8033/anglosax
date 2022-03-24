@@ -1,7 +1,23 @@
-const alphabet = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+const storedLanguage = localStorage.getItem('language');
+const storedNrRows = localStorage.getItem('nrRows');
+const alphabetEn = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+const alphabetSwe = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Å', 'Ä', 'Ö'];
+const keyboardEn = ['Q','W','E','R','T','Y','U','I','O','P','','A','S','D','F','G','H','J','K','L','','Enter','Z','X','C','V','B','N','M','Clear'];
+const keyboardSwe = ['Q','W','E','R','T','Y','U','I','O','P','Å','','A','S','D','F','G','H','J','K','L','Ö','Ä','','Enter','Z','X','C','V','B','N','M','Clear'];
+
+var language = 'en';
+language = storedLanguage !== null ? storedLanguage : 'swe';
+var alphabet = language === 'en' ? alphabetEn : alphabetSwe;
+var keyboard = language === 'en' ? keyboardEn : keyboardSwe;
+var words = language === 'en' ? wordsEn : wordsSwe;
+
 const nrBoxes = 25;
 const nrLetters = 5;
-const nrRows = 5;
+const minNrRows = 1;
+const maxNrRows = 10;
+const defaultNrRows = 6;
+var nrRows = 3;
+nrRows = storedNrRows !== null ? storedNrRows : defaultNrRows;
 const colors = {
   success: '#2ecc71',
   error: '#e74c3c',
@@ -10,7 +26,40 @@ const colors = {
   nonMemberLetter: '#444444',
 };
 
-function makeAnnouncement(message, error) {
+const correctWord = getRandomWord();
+
+function getRandomWord() {
+  let index = Math.floor((Math.random() * words.length) + 1);
+  return words[index];
+}
+
+const rowsSelection = document.getElementById('rowsSelection');
+rowsSelection.getElementsByTagName('option')[nrRows-1].selected = 'selected';
+
+const toggleLanguageButton = document.getElementById('toggleLanguageBtn');
+toggleLanguageButton.innerText = language === 'en' ? 'Byt till svenska' : 'Change to english';
+
+toggleLanguageButton.addEventListener('click', (e) => {
+  language = language === 'swe' ? 'en' : 'swe';
+  toggleLanguageButton.innerText = language === 'en' ? 'Byt till svenska' : 'Change to english';
+  localStorage.setItem('language', language);
+  restart();
+});
+
+const cookiesPrompt = document.getElementById('cookiesPrompt');
+const cookies = localStorage.getItem('cookies');
+
+if (cookies === 'accepted') {
+  cookiesPrompt.style.display = 'none';
+}
+
+const acceptCookiesBtn = document.getElementById('acceptCookiesBtn');
+acceptCookiesBtn.addEventListener('click', (e) => {
+  localStorage.setItem('cookies', 'accepted');
+  cookiesPrompt.style.display = 'none';
+});
+
+function makeAnnouncement(message, error, timer) {
   let announcementBox = document.getElementById('announcementBox');
   announcementBox.innerHTML = message;
   if (error) {
@@ -20,14 +69,11 @@ function makeAnnouncement(message, error) {
   }
   announcementBox.style.display = 'block';
 
-  setTimeout(() => {
-    announcementBox.style.display = 'none';
-  }, 2000);
-}
-
-function getRandomWord() {
-  let index = Math.floor((Math.random() * words.length) + 1);
-  return words[index];
+  if (timer) {
+    setTimeout(() => {
+      announcementBox.style.display = 'none';
+    }, 2000);
+  }
 }
 
 // Input boxes (letter boxes)
@@ -64,31 +110,51 @@ inputContainer.onkeyup = (e) => {
   }
 };
 
-for (let row = 1; row <= nrRows; row++) {
-  for (let letter = 1; letter <= nrLetters; letter++) {
-    let input = '';
-    if (row === 1) {
-      input = "<input type='text' autocomplete='off' maxlength='1' class='noSelect inputBox' id='"+row+"-"+letter+"' />";
-    } else {
-      input = "<input type='text' autocomplete='off' maxlength='1' class='noSelect inputBox' id='"+row+"-"+letter+"' disabled/>";
+function outputBoxes() {
+  inputContainer.innerHTML = '';
+  for (let row = 1; row <= nrRows; row++) {
+    for (let letter = 1; letter <= nrLetters; letter++) {
+      let element = '';
+      if ((letter)%nrLetters === 0) {
+        if (row === 1) {
+          element = "<input type='text' autocomplete='off' maxlength='1' class='noSelect inputBox' id='"+row+"-"+letter+"' /><br />";
+        } else {
+          element = "<input type='text' autocomplete='off' maxlength='1' class='noSelect inputBox' id='"+row+"-"+letter+"' disabled/><br />";
+        }
+      } else if (row === 1) {
+        element = "<input type='text' autocomplete='off' maxlength='1' class='noSelect inputBox' id='"+row+"-"+letter+"' />";
+      } else {
+        element = "<input type='text' autocomplete='off' maxlength='1' class='noSelect inputBox' id='"+row+"-"+letter+"' disabled/>";
+      }
+      inputContainer.innerHTML += element;
     }
-    inputContainer.innerHTML += input;
+  }
+}
+outputBoxes();
+
+const alphabetContainer = document.getElementById('alphabetContainer');
+
+function outputKeyboard() {
+  alphabetContainer.innerHTML = '';
+  let element = '';
+  for (const key of keyboard) {
+    if (key === 'Enter') {
+      element = '<button class="letterBoxFunction primaryBtn" id="enterBtn">Guess</button>';
+    } else if (key === 'Clear') {
+      element = '<button class="letterBoxFunction primaryBtn" id="clearBtn">Clear</button>';
+    } else if (key === '') {
+      element = '<br />';
+    } else {
+      element = "<button class='noSelect letterBox primaryBtn' id='letter-"+key.toLocaleLowerCase()+"'>"+key+"</button>"
+    }
+
+    alphabetContainer.innerHTML += element;
   }
 }
 
-// Alphabet boxes
-const alphabetContainer = document.getElementById('alphabetContainer');
-for (let i = 0; i < alphabet.length; i++) {
-  let letter = alphabet[i];
-  let letterButton = "<button class='noSelect letterBox' id='letter-"+letter.toLocaleLowerCase()+"'>"+letter+"</button>";
-  if ((i+1)%10==0) {
-    alphabetContainer.innerHTML += letterButton;
-    alphabetContainer.innerHTML += "<br />"
-  } else {
-    alphabetContainer.innerHTML += letterButton;
-  }
-}
-function inputLetterFromAlphabet(letterToInput) {
+outputKeyboard();
+
+function inputLetterFromKeyboard(letterToInput) {
   for (let row = 1; row <= nrRows; row++) {
     for (let letter = 1; letter <= nrLetters; letter++) {
       if (document.getElementById(row+'-'+letter).value === '') {
@@ -108,9 +174,8 @@ document.body.addEventListener('click', (e) =>{
   e.preventDefault()
   let id = e.target.id;
   let letter = id.slice(-1).toUpperCase();
-
   if (id.includes("letter-") && alphabet.includes(letter)) {
-    inputLetterFromAlphabet(letter);
+    inputLetterFromKeyboard(letter);
   } else if (id.includes("-")) {
       if (e.key === 'Enter') {
         // code for enter
@@ -120,32 +185,30 @@ document.body.addEventListener('click', (e) =>{
 
 // Listen for clicks on the keyboard/alphabet written out
 document.body.addEventListener('keypress', (e) =>{
-  console.log(e.key)
   if (e.key === 'Enter') {
     checkWord();
   } else if (e.target.id.includes('-') && !e.target.id.includes('letter-') ) {
-    e.target.value = e.key;
-    return
+    // e.target.value = e.key;
+    // return
   }
 });
 
-let guessBtn = document.getElementById('guessBtn');
-let clearBtn = document.getElementById('clearBtn');
-let restartBtn = document.getElementById('restartBtn');
-
 // Listen for guess click
-guessBtn.addEventListener('click', (e) => {
+let enterBtn = document.getElementById('enterBtn');
+enterBtn.addEventListener('click', (e) => {
   e.preventDefault();
   checkWord();
 });
 
 // Listen for clear click
+let clearBtn = document.getElementById('clearBtn');
 clearBtn.addEventListener('click', (e) => {
   e.preventDefault();
   clearLetter();
 });
 
 // Listen for restart click
+let restartBtn = document.getElementById('restartBtn');
 restartBtn.addEventListener('click', (e) => {
   e.preventDefault();
   restart();
@@ -163,6 +226,8 @@ function clearLetter() {
 
 // Restart Game
 function restart() {
+  localStorage.setItem('nrRows', rowsSelection.value);
+
   location.reload();
 }
 
@@ -180,7 +245,7 @@ function findRow() {
     }
   }
 
-  return 5
+  return nrRows
 }
 
 // Checks where the user is - letter number
@@ -189,7 +254,7 @@ function findLetter() {
     for (let letter = 1; letter <= nrLetters; letter++) {
       if (document.getElementById(row+'-'+letter).value === '') {
         if (letter-1 === 0) {
-          return 5
+          return nrLetters
         } else {
           return letter - 1
         }
@@ -197,16 +262,16 @@ function findLetter() {
     }
   }
 
-  return 5
+  return nrLetters
 }
 
 function wordExists(word) {
   return words.includes(word.toLowerCase())
 }
 
-function getRowFromBoard(row) {
+function getWordFromBoard(row) {
   let word = ""
-  for (let i = 1; i <= 5;i++) {
+  for (let i = 1; i <= nrLetters;i++) {
     word+=document.getElementById(row+'-'+i).value;
   }
   return word
@@ -226,112 +291,142 @@ function findAndMarkAlphabetLetter(letter, type) {
   button.style.backgroundColor = color;
 }
 
-let map = {
-  "row1": {},
-  "row2": {},
-  "row3": {},
-  "row4": {},
-  "row5": {}
+let map = {}
+for (let x = 1; x <= nrRows; x++) {
+  map["row"+x] = { }
 }
 
 function giveLetterHints(row, guess) {
   const correctWordArray = correctWord.split('');
   const guessedWordArray = guess.split('');
-
+  
   for (let i = 0; i < nrLetters; i++) {
-    occurrences = 0
+
+    let occurrences = 0;
     for (let j = 0; j < nrLetters; j++) {
-      if (guessedWordArray[i]===correctWordArray[j]) {
+      if (guessedWordArray[i] === guessedWordArray[j]) {
         occurrences++;
       }
     }
-    if (guessedWordArray[i]===correctWordArray[i]) {
-      map['row'+row][guessedWordArray[i]] = {
-        occurrences: occurrences,
-        marking: 1,
-        timesMarked: 0,
-      };
-    } else if (correctWordArray.includes(guessedWordArray[i])) {
-      map['row'+row][guessedWordArray[i]] = {
-        occurrences: occurrences,
-        marking: 0,
-        timesMarked: 0,
-      };
+
+    let guessed = guessedWordArray[i];
+    let correct = correctWordArray[i];
+    let mapItemExists = map['row'+row].hasOwnProperty(guessed);
+    let letterObject = {
+      letter: guessed,
+      occurrences: occurrences,
+      timesMarked: 0,
+      index: 0,
+    };
+
+    if (guessed===correct) {
+      if (!mapItemExists) {
+        map['row'+row][guessed]= { marking: [1], ...letterObject };
+      } else {
+        map['row'+row][guessed].marking.push(1);
+      }
+    } else if (correctWordArray.includes(guessed)) {
+      if (!mapItemExists) {
+        map['row'+row][guessed] = { marking: [0], ...letterObject };
+      } else {
+        map['row'+row][guessed].marking.push(0);
+      }
     } else {
-      map['row'+row][guessedWordArray[i]] = {
-        occurrences: occurrences,
-        marking: -1,
-        timesMarked: 0,
-      };
+      if (!mapItemExists) {
+        map['row'+row][guessed] = { marking: [-1], ...letterObject };
+      } else {
+        map['row'+row][guessed].marking.push(-1);
+      }
     }
   }
+
   for (let i = 0; i < nrLetters; i++) {
+    let guessed = guessedWordArray[i];
     let input = document.getElementById(row+'-'+(i+1));
-    if (map['row'+row][guessedWordArray[i]].occurrences 
-    > map['row'+row][guessedWordArray[i]].timesMarked 
-    && map['row'+row][guessedWordArray[i]].marking === 0) {
-      // Mark yellow
-      input.style.backgroundColor = colors.memberLetter;
-      map['row'+row][guessedWordArray[i]].timesMarked += 1
-      findAndMarkAlphabetLetter(guessedWordArray[i], 'member');
-    } else if (guessedWordArray[i] !== correctWordArray[i] && map['row'+row][guessedWordArray[i]].marking === -1){
-      findAndMarkAlphabetLetter(guessedWordArray[i], 'nonMember');
-    } else if (guessedWordArray[i] === correctWordArray[i] && map['row'+row][guessedWordArray[i]].marking === 1) {
-      input.style.backgroundColor = colors.correctLetter;
-      findAndMarkAlphabetLetter(guessedWordArray[i], 'correct');
+    let mapItem = map['row'+row][guessed];
+    occurrences = mapItem.occurrences;
+    let timesMarked = mapItem.timesMarked;
+
+    if (mapItem.marking[mapItem.index] === 1) {
+      input.style.backgroundColor = colors.correctLetter
+      input.style.border = "2px solid "+colors.correctLetter;
+      findAndMarkAlphabetLetter(guessed, 'correct');
+    } else if (mapItem.marking[mapItem.index] === 0) {
+      if (occurrences > timesMarked && mapItem.marking[mapItem.index-1] !== 0) {
+        if (guessed === 'a') {
+          console.log(occurrences)
+          console.log(timesMarked)
+        }
+        input.style.backgroundColor = colors.memberLetter;
+        input.style.border = "2px solid "+colors.memberLetter;
+        findAndMarkAlphabetLetter(guessed, 'member');
+        map['row'+row][guessed].timesMarked += 1;
+      }
+    } else if (mapItem.marking[mapItem.index] === -1) {
+      input.style.backgroundColor = colors.nonMemberLetter
+      input.style.border = "2px solid "+colors.nonMemberLetter;
+      findAndMarkAlphabetLetter(guessed, 'nonMember');
     }
+
+    mapItem.index += 1;
   }
 }
 
 function toggleRow(row, disabled) {
-  for (let letter = 1; letter <= 5; letter++) {
+  for (let letter = 1; letter <= nrLetters; letter++) {
     document.getElementById(row+'-'+letter).disabled = disabled
   }
 }
 
 function highlightRow(row) {
-  let writeArr = ['W','R','I','T','E'];
-  for (let letter = 1; letter <= 5; letter++) {
+  let writeArr = language === 'en' ? ['W','R','I','T','E'] : ['S','K','R','I','V'];
+  for (let letter = 1; letter <= nrLetters; letter++) {
     let input = document.getElementById(row+'-'+letter);
     input.placeholder = writeArr[letter-1];
   }
 }
 
-
-const correctWord = getRandomWord();
 highlightRow(findRow())
 
 function checkWord() {
   const row = findRow();
 
   // Get word
-  let guess = getRowFromBoard(row).toLowerCase();
+  let guess = getWordFromBoard(row).toLowerCase();
 
-  if (guess.length === 5) {
+  if (guess.length === nrLetters) {
     if (wordExists(guess)) {
       if (guess === correctWord) {
-        makeAnnouncement('You have gussed the correct word', false);
+        makeAnnouncement('You have gussed the correct word!', false, false);
+
+        // highlight Letters
+        giveLetterHints(row, guess);
+        
+        // Disable Row
+        toggleRow(row, true);
       } else {
-        makeAnnouncement('You have gussed the incorrect word', true);
+
+        if (row === nrRows) {
+          makeAnnouncement('Game Over! The correct word was "'+correctWord+'"', true, false);
+        }
+
+        // highlight Letters
+        giveLetterHints(row, guess);
+
+        // Disable Row
+        toggleRow(row, true);
+        
+        // Enable Next Row
+        toggleRow(row+1, false);
+
+        // highlight row
+        highlightRow(row+1);
       }
-
-      // highlight Letters
-      giveLetterHints(row, guess);
-
-      // Disable Row
-      toggleRow(row, true);
-      
-      // Enable Next Row
-      toggleRow(row+1, false);
-
-      // highlight row
-      highlightRow(row+1);
-
     } else {
-      makeAnnouncement('"'+guess+'" doesn\'t exist in our list', true);
+      makeAnnouncement('"'+guess+'" doesn\'t exist in our list', true, true);
     }
   } else {
-    makeAnnouncement('The word is 5 letters', true);
+    makeAnnouncement('The word is '+nrLetters+' letters', true, true);
   }
 
 

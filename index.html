@@ -3,6 +3,7 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Play the famous word game within your browser or smartphone!"/>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -11,30 +12,49 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="theme-color" content="#ffffff">
     <link rel="stylesheet" href="style.css" />
-    <title>Anglosax.se</title>
+    <title>anglosax.se - Word game with English and Swedish words</title>
   </head>
   <body>
     <div id="app">
+      <div id="cookiesPrompt">
+        <span>
+          This website uses cookies in order to enhance the experience
+        </span>
+        <button id="acceptCookiesBtn" class="primaryBtn">Okay</button>
+      </div>
       <header>
-        <img src="./images/logo.png" alt="Logo for anglosax.se" />
+        <a href="https://anglosax.se" title="Go to anglosax.se">
+          <img src="./images/logo-white.png" alt="Logo for anglosax.se" />
+        </a>
+        <nav>
+          <button id="toggleLanguageBtn" class="primaryBtn"></button>
+          <div>
+            <select id="rowsSelection">
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6" selected>6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+              <option value="9">9</option>
+              <option value="10">10</option>
+            </select>
+            <button id="restartBtn" class="primaryBtn">Restart</button>
+          </div>
+        </nav>
       </header>
       <div id="wrapper">
-        <div id="inputContainer">
-        </div>
+        <div id="inputContainer"></div>
         <div id="announcementBox"></div>
-        <h2>Letters to use</h2>
-        <div id="alphabetContainer">
-        </div>
-        <div id="buttonsContainer">
-          <button id="guessBtn">Guess</button>
-          <div id="secondaryButtons">
-            <button id="clearBtn">Clear</button>
-            <button id="restartBtn">Restart</button>
-          </div>
-        </div>
       </div>
+      <footer>
+        <div id="alphabetContainer"></div>
+      </footer>
     </div>
-    <script type="text/javascript" src="5-letter-words.js"></script>
+    <script type="text/javascript" src="5-letter-english-words.js"></script>
+    <script type="text/javascript" src="5-letter-swedish-words.js"></script>
     <script type="text/javascript" src="script.js"></script>
   </body>
 </html>
