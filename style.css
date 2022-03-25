@@ -202,6 +202,20 @@ header nav select {
     width: 70px;
     font-size: ;
   }
+
+  #alphabetContainer {
+    margin: 2%;
+  }
+
+  .keyboard-row {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .letterBox {
+    flex: 1;
+  }
+
 }
 
 /*Retrieved from: https://stackoverflow.com/questions/826782/how-to-disable-text-selection-highlighting*/

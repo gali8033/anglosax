@@ -2,8 +2,16 @@ const storedLanguage = localStorage.getItem('language');
 const storedNrRows = localStorage.getItem('nrRows');
 const alphabetEn = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
 const alphabetSwe = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', 'Å', 'Ä', 'Ö'];
-const keyboardEn = ['Q','W','E','R','T','Y','U','I','O','P','','A','S','D','F','G','H','J','K','L','','Enter','Z','X','C','V','B','N','M','Clear'];
-const keyboardSwe = ['Q','W','E','R','T','Y','U','I','O','P','Å','','A','S','D','F','G','H','J','K','L','Ö','Ä','','Enter','Z','X','C','V','B','N','M','Clear'];
+const keyboardEn = [
+  ['Q','W','E','R','T','Y','U','I','O','P'],
+  ['A','S','D','F','G','H','J','K','L'],
+  ['Enter','Z','X','C','V','B','N','M','Clear']
+];
+const keyboardSwe = [
+  ['Q','W','E','R','T','Y','U','I','O','P','Å'],
+  ['A','S','D','F','G','H','J','K','L','Ö','Ä'],
+  ['Enter','Z','X','C','V','B','N','M','Clear']
+];
 
 var language = 'en';
 language = storedLanguage !== null ? storedLanguage : 'swe';
@@ -134,23 +142,50 @@ outputBoxes();
 
 const alphabetContainer = document.getElementById('alphabetContainer');
 
+// function outputKeyboard() {
+//   alphabetContainer.innerHTML = '';
+//   let element = '';
+//   for (const key of keyboard) {
+//     if (key === 'Enter') {
+//       element = '<button class="letterBoxFunction primaryBtn" id="enterBtn">Guess</button>';
+//     } else if (key === 'Clear') {
+//       element = '<button class="letterBoxFunction primaryBtn" id="clearBtn">Clear</button>';
+//     } else if (key === '') {
+//       element = '</div>';
+//     } else {
+//       element = "<button class='noSelect letterBox primaryBtn' id='letter-"+key.toLocaleLowerCase()+"'>"+key+"</button>"
+//     }
+
+//     alphabetContainer.innerHTML += element;
+//   }
+// }
+
 function outputKeyboard() {
   alphabetContainer.innerHTML = '';
   let element = '';
-  for (const key of keyboard) {
-    if (key === 'Enter') {
-      element = '<button class="letterBoxFunction primaryBtn" id="enterBtn">Guess</button>';
-    } else if (key === 'Clear') {
-      element = '<button class="letterBoxFunction primaryBtn" id="clearBtn">Clear</button>';
-    } else if (key === '') {
-      element = '<br />';
-    } else {
-      element = "<button class='noSelect letterBox primaryBtn' id='letter-"+key.toLocaleLowerCase()+"'>"+key+"</button>"
+  for (let row = 0; row < keyboard.length; row++) {
+    console.log('Row: '+row)
+    alphabetContainer.innerHTML += '<div class="keyboard-row">'
+
+    let keyboardRow = document.getElementsByClassName('keyboard-row');
+    for (let key = 0; key < keyboard[row].length; key++) {
+      console.log('Key: '+key)
+      if (keyboard[row][key] === 'Enter') {
+        element = '<button class="letterBoxFunction primaryBtn" id="enterBtn">Guess</button>';
+      } else if (keyboard[row][key] === 'Clear') {
+        element = '<button class="letterBoxFunction primaryBtn" id="clearBtn">Clear</button>';
+      } else {
+        element = "<button class='noSelect letterBox primaryBtn' id='letter-"+keyboard[row][key].toLocaleLowerCase()+"'>"+keyboard[row][key]+"</button>"
+      }
+
+      keyboardRow[row].innerHTML += element;
     }
 
-    alphabetContainer.innerHTML += element;
+    alphabetContainer.innerHTML += '</div>'
   }
 }
+
+
 
 outputKeyboard();
 
